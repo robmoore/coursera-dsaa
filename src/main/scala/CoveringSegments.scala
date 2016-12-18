@@ -1,17 +1,38 @@
-import java.util._
+import java.util.Scanner
+
+import scala.annotation.tailrec
 
 object CoveringSegments {
+  private case class Segment(start: Int, end: Int)
 
-  private def optimalPoints(segments: Array[Segment]): Array[Int] = {
-    val points = Array.ofDim[Int](2 * segments.length)
-    for (i <- segments.indices) {
-      points(2 * i) = segments(i).start
-      points(2 * i + 1) = segments(i).end
+  private def partitionSegments(segments: Seq[Segment], acc: Seq[Seq[Segment]] = List()): Seq[Seq[Segment]] = {
+    @tailrec
+    def helper(segments: Seq[Segment], acc: Seq[Seq[Segment]] = List()): Seq[Seq[Segment]] = {
+      if (segments.isEmpty)
+        acc
+      else {
+        // ensure that end point exists in segment
+        val x = segments.span(s => s.start <= segments.head.end && s.end >= segments.head.end)
+        helper(x._2, acc ++ List(x._1))
+      }
     }
-    points
+    // sort by end points
+    helper(segments.sortBy(x => x.end))
   }
 
-  private case class Segment(var start: Int, var end: Int)
+  private def findPoint(segments: Seq[Segment]): Int = {
+    @tailrec
+    def helper(p: Int): Int = {
+      if (p < 0)
+        throw new RuntimeException("Reached 0!")
+      else if (segments.forall(x => x.start <= p && p <= x.end))
+        p
+      else
+        helper(p - 1)
+    }
+    // sort segment group by end points and pass in first end point
+    helper(segments.map(x => x.end).sorted.head)
+  }
 
   /*
     Task. Given a set of n segments {[a_0, b_0], [a_1, b_1], ..., [a_n−1 , b_n−1]} with integer coordinates on a line,
@@ -33,18 +54,19 @@ object CoveringSegments {
   def main(args: Array[String]) {
     val scanner = new Scanner(System.in)
     val n = scanner.nextInt()
-    val segments = Array.ofDim[Segment](n)
-    for (i <- 0 until n) {
-      var start: Int = 0
-      var end: Int = 0
-      start = scanner.nextInt()
-      end = scanner.nextInt()
-      segments(i) = Segment(start, end)
+    require(n >= 1 && n <= 100)
+    def makeSegment(i: Int): Segment = {
+      val start = scanner.nextInt()
+      val end = scanner.nextInt()
+      require(0 <= start && start <= 10e9)
+      require(start <= end && end <= 10e9)
+      Segment(start, end)
     }
-    val points = optimalPoints(segments)
-    println(points.length)
-    for (point <- points) {
-      System.out.print(point + " ")
-    }
+    val segments = List.tabulate(n)(makeSegment).distinct
+    val partitionedSegments = partitionSegments(segments)
+    println(partitionedSegments.length)
+
+    val points = partitionedSegments.map(x => findPoint(x))
+    println(points.mkString(" "))
   }
 }
