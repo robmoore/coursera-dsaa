@@ -5,11 +5,7 @@ import scala.annotation.tailrec
 
 object BinarySearch {
 
-  def binarySearch(a: Array[Int], x: Int): Int = {
-    bs(a, 0, a.length - 1, x)
-  }
-
-  // Returns index of first occurance of x
+  // Returns index of first occurrence of x
   def linearSearch(a: Array[Int], x: Int): Int = {
     for (i <- a.indices) {
       if (a(i) == x) return i
@@ -50,19 +46,23 @@ object BinarySearch {
     }
   }
 
-  @tailrec
-  private def bs(a: Array[Int], low: Int, high: Int, key: Int): Int = {
-    if (high < low)
-      return -1
+  def binarySearch(a: Array[Int], x: Int): Int = {
+    @tailrec
+    def bs(a: Array[Int], low: Int, high: Int, key: Int): Int = {
+      if (high < low)
+        return -1
 
-    val mid = Math.floor(low + ((high - low) / 2)).toInt
-    if (key == a(mid)) {
-      mid
-    } else if (key < a(mid)) {
-      bs(a, low, mid - 1, key)
-    } else {
-      bs(a, mid + 1, high, key)
+      val mid = Math.floor(low + ((high - low) / 2)).toInt
+      if (key == a(mid)) {
+        mid
+      } else if (key < a(mid)) {
+        bs(a, low, mid - 1, key)
+      } else {
+        bs(a, mid + 1, high, key)
+      }
     }
+
+    bs(a, 0, a.length - 1, x)
   }
 
   class FastScanner(val stream: InputStream) {
