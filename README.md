@@ -1,0 +1,1 @@
+Exercises for the [Algorithmic Toolbox](https://www.coursera.org/learn/algorithmic-toolbox) course on Coursera

@@ -2,6 +2,17 @@ import java.util.Scanner
 
 import scala.annotation.tailrec
 
+/*
+  Task.
+    Given an integer n, compute the minimum number of operations needed to obtain the number n starting from the number 1.
+  Input Format.
+    The input consists of a single integer 1 ≤ n ≤ 10^6.
+  Output Format.
+    In the first line, output the minimum number k of operations needed to get n from 1.
+    In the second line output a sequence of intermediate numbers. That is, the second line should contain
+    positive integers a_0, a_2, ..., a_k−1 such that a_0 = 1, a_k−1 = n and for all 0 ≤ i < k−1, a_i+1 is equal to
+    either a_i+1, 2a+i, or 3a+i. If there are many such sequences, output any one of them.
+ */
 object PrimitiveCalculator extends App {
   val scanner = new Scanner(System.in)
   val n = scanner.nextInt()
